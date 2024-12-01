@@ -1,0 +1,38 @@
+<div>
+    <h1>Maderas Estufadas Del Guadiana</h1>
+    <h2>Nuestro productos</h2>
+    
+    {{!-- <p>{{productos}}</p> --}}
+    
+    <div class="container">
+        <div class="row-md-10 d-flex">
+            {{#if productos}}
+                <div class="card-columns">
+                    {{#each productos}}
+                    
+
+                    <div class="card">
+                        <img class="card-img-top" src="{{imagen}}" alt="https://multiproductosgd.com.mx/wp-content/uploads/2022/11/Multiproductos-GD-Molduras-para-exterior-Orlando.jpg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{nombre}}</h5>
+                            <p class="card-text">{{descripcionCorta}}.</p>
+                            <a href="/producto/{{@key}}"  class="btn btn-secondary btn-block">Ver</a>
+                        </div>
+                        <div class="card-footer">
+                        <small class="text-muted">{{@key}}</small>
+                        </div>
+                    </div>
+
+                    
+
+
+                {{/each}}
+                </div>
+            {{else}}
+                <p>No productos todavía</p>
+            {{/if}}
+
+        </div>
+    </div>
+
+</div>

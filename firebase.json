@@ -1,0 +1,10 @@
+{
+  "dataconnect": {
+    "source": "dataconnect"
+  },
+  "hosting": {
+    "site": "maderas-estufadas-del-guadiana",
+
+    "public": "public"
+  }
+}

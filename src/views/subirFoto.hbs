@@ -1,0 +1,13 @@
+ {{!-- Este es un archivo temporal --}}
+
+
+ <form  action="/api/subirImagen" enctype="multipart/form-data" method="post">
+  
+  <div class="form-group ">
+  <input type="file" id="fileInput" name="imagen" accept="image/*" class="form-control">
+    <input type="text" id="tituloInput" name="titulo" placeholder="Título" class="form-control">
+    <button id="uploadButton" class="btn btn-secondary">Subir Imagen</button>
+
+    <div id="imageList"></div>
+  </div>
+ </form>   
