@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.89666db8.css",
+    "main.js": "/static/js/main.f3492a6d.js",
+    "static/js/453.568f39bf.chunk.js": "/static/js/453.568f39bf.chunk.js",
+    "static/media/g.png": "/static/media/g.f035e7b7821b5baeaf51.png",
+    "static/media/c.png": "/static/media/c.965bbe62c1c75c3abca3.png",
+    "static/media/b.png": "/static/media/b.0669664cb983331040db.png",
+    "static/media/g-removebg-preview.png": "/static/media/g-removebg-preview.fa101a4b17657e36e7db.png",
+    "static/media/dd.png": "/static/media/dd.0ae2f9eb57ea8c22f47d.png",
+    "static/media/b-removebg-preview.png": "/static/media/b-removebg-preview.37e1b2116209be0c46cf.png",
+    "static/media/c-removebg-preview.png": "/static/media/c-removebg-preview.50b493b585e699dbe235.png",
+    "static/media/d-removebg-preview.png": "/static/media/d-removebg-preview.5561e3f68afd99a3061d.png",
+    "static/media/molduras3.jpg": "/static/media/molduras3.4cdc3c4572a53600040f.jpg",
+    "index.html": "/index.html",
+    "main.89666db8.css.map": "/static/css/main.89666db8.css.map",
+    "main.f3492a6d.js.map": "/static/js/main.f3492a6d.js.map",
+    "453.568f39bf.chunk.js.map": "/static/js/453.568f39bf.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.89666db8.css",
+    "static/js/main.f3492a6d.js"
+  ]
+}
