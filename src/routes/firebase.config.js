@@ -33,4 +33,4 @@ productsRef.once('value', (snapshot) => {
 //     console.error('Error al obtener datos:', err);
 //   });
 
-module.exports = { db , storage, bucket }
+module.exports = { db , storage, bucket , admin}

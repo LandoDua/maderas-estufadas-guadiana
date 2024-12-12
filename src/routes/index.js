@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { db, storage, bucket } = require("./firebase.config");
+const { db, storage, bucket, admin } = require("./firebase.config");
 const multer = require("multer");
 const moment = require("moment");
 
@@ -181,7 +181,67 @@ router.get("/api/producto/:id", async (req, res) => {
     });
 });
 
+router.delete("/api/producto/:id", (req, res) => {
+  const idProducto = req.params.id;
+  const productosRef = db.ref("productos/" + idProducto);
+  var urlImagen = "";
+
+  productosRef.once("value", (snapshot) => {
+    const producto = snapshot.val();
+    const urlImagen = producto.imagen;
+    const bucketName = "c-and-f";
+
+    const storageRef = bucket.file(urlImagen);
+
+    storageRef
+      .delete()
+      .then(() => {
+        console.log("Imagen eliminada correctamente");
+        
+          
+      })
+      .then(()=>{
+        productosRef
+        .remove()
+        .then(() => {
+          res.json({
+            status: `${idProducto} eliminado correctamente`,
+          });
+        })
+        .catch(() => {
+          res.json({
+            status: "Error al intentar eliminar producto",
+          });
+        });
+      })
+      .catch((error) => {
+        console.error("Error al eliminar la imagen:", error);
+      });
+  });
+
+  // productosRef
+  //   .remove()
+  //   .then(() => {
+  //     res.json({
+  //       status: `${idProducto} eliminado correctamente`,
+  //     });
+  //   })
+  //   .catch(() => {
+  //     res.json({
+  //       status: "Error al intentar eliminar producto",
+  //     });
+  //   });
+});
+
 ////////////////////////// LOGIN y seguridad //////////////////////////
+
+router.post("/login", (req, res) => {
+  console.table(req.body);
+
+  res.json({
+    status: "recibida",
+  });
+});
 
 ////////////////////////// control de imagenes //////////////////////////
 

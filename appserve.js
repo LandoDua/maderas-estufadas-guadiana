@@ -24,17 +24,21 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// middlewares
+
+app.use(morgan('dev')); // sirve para tener control de las peticiones
+app.use(express.json())
+app.use(express.urlencoded({
+    extended: true,
+}));
+
+
 // routes
 // asignamos el resto de rutas
 app.use(require('./src/routes/index'));
 
 
-// middlewares
 
-app.use(morgan('dev')); // sirve para tener control de las peticiones
-app.use(express.urlencoded({
-    extended: true,
-}));
 
 
 // console.log('-----');
