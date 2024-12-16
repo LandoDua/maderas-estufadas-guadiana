@@ -1,11 +1,15 @@
 const express = require('express');
 const morgan = require('morgan');
+const jwt = require('jsonwebtoken');
+const cookierParser = require("cookie-parser")
+
+const {DEAFULT_PORT} = require('./config.js')
 const path = require('path');
 const exphbs = require('express-handlebars');
 const app = express();
 
 // asiganamos el puerto correspondiente del servidor, o 3000 en caso de no tener
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || DEAFULT_PORT);
 
 // configuracion de express-handle-bars
 // es una herramienta de renderizado de html con datos incrustados
@@ -28,6 +32,8 @@ app.get('/', (req, res) => {
 
 app.use(morgan('dev')); // sirve para tener control de las peticiones
 app.use(express.json())
+app.use(cookierParser())
+
 app.use(express.urlencoded({
     extended: true,
 }));

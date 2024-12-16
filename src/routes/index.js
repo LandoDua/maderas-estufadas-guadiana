@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { db, storage, bucket, admin } = require("./firebase.config");
+const { UserRepository} = require('./UserRepository')
 const multer = require("multer");
 const moment = require("moment");
 
@@ -7,6 +8,7 @@ const path = require("path");
 
 const router = Router(); // router de Express
 const upload = multer({}); // sirve para recibir archivos
+
 
 ////////////////////////// ACCIONES CON REDENDERIZADO  //////////////////////////
 
@@ -235,13 +237,117 @@ router.delete("/api/producto/:id", (req, res) => {
 
 ////////////////////////// LOGIN y seguridad //////////////////////////
 
-router.post("/login", (req, res) => {
-  console.table(req.body);
+router.get('/loginscreen', (req, res)=>{
+  res.render('login')
+})
 
-  res.json({
-    status: "recibida",
-  });
+router.get('/validar',(req, res)=>{
+  if(req.cookies.access_token){
+    res.send('Sesion iniciada como '+ req.cookies.access_token)
+  } else{
+    res.send('Acceso denegado')
+
+  }
+})
+
+router.post("/registrer", (req, res) => {
+  // console.table(req.body);
+  const {user, email, password} = req.body
+
+  try {
+    const respuesta = UserRepository.create({user, email, password})
+    console.log("UID:"+respuesta)
+    res.json({
+      status: "usuario agregado correctamente"
+    }) 
+  } catch (error) {
+    res.json({
+      error: "Error al crear usuario"
+    })
+  }
+
+  
 });
+
+router.post("/login", async (req, res) => {
+  // console.table(req.body);
+  const {email, password} = req.body
+
+ 
+
+
+  res.cookie('access_token', email, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 2
+  })
+  .json({
+    status: 'sesion iniciada como: '+ email
+  })
+
+ 
+
+  
+});
+
+router.get("/users", async (req, res )=>{
+  var usuarios = {}
+  // const user_list = await UserRepository.all()
+  const auth = admin.auth()
+
+  const listUsersResult = await auth.listUsers()
+  // console.log(listUsersResult);
+  // console.log("Lista usuarios: ");
+  
+  // console.log(user_list);
+  for (const user in listUsersResult.users){
+    // console.log(listUsersResult.users[user]);
+
+    const {uid, email, displayName} = listUsersResult.users[user]
+    const fechaCreacion = listUsersResult.users[user].metadata.creationTime
+    // console.log({
+    //   uid: uid,
+    //   email: email,
+    //   user: displayName,
+    //   creacion: fechaCreacion
+
+    // })
+    usuarios[uid] = {
+      uid: uid,
+      email: email,
+      user: displayName,
+      creacion: fechaCreacion
+
+    }
+  }
+  
+  // console.log(usuarios);
+  
+  // res.send("RecibidoJSON1")
+  res.json(usuarios)
+
+})
+
+router.delete("/users/:id", (req, res)=>{
+  const ID = req.params.id
+
+  const auth = admin.auth()
+  auth.deleteUser(ID)
+  .then(()=>{
+    res.json({
+      status: "Usuario eliminado correctamente"
+    })
+  })
+  .catch((err)=>{
+    res.json({
+      error: "Error al eliminar "+err
+    })
+  })
+
+  // res.status('Recibido')
+})
+
 
 ////////////////////////// control de imagenes //////////////////////////
 
