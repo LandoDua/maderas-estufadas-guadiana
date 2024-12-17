@@ -100,8 +100,10 @@ router.get("/api", async (req, res) => {
 // agrega un producto nuevo a la base de datos
 /* recibe JSON
  {nombre: text,
+ n_moldura: text,
  descripcionCorta: text,
  descripcion: text,
+ descripcion2: text,
  categorias: text,
  imagen: file,
  }
@@ -287,8 +289,6 @@ router.post("/login", async (req, res) => {
   })
 
  
-
-  
 });
 
 router.get("/users", async (req, res )=>{
@@ -301,11 +301,13 @@ router.get("/users", async (req, res )=>{
   // console.log("Lista usuarios: ");
   
   // console.log(user_list);
+  
   for (const user in listUsersResult.users){
     // console.log(listUsersResult.users[user]);
 
-    const {uid, email, displayName} = listUsersResult.users[user]
+    const {uid, email, displayName,} = listUsersResult.users[user]
     const fechaCreacion = listUsersResult.users[user].metadata.creationTime
+
     // console.log({
     //   uid: uid,
     //   email: email,
@@ -348,7 +350,56 @@ router.delete("/users/:id", (req, res)=>{
   // res.status('Recibido')
 })
 
+////////////////////////////// control de token //////////////////////////////////
+router.post('/nuevo-token', async (req, res)=>{
+  const {token, name, email, expirationDate} = req.body
 
+
+  // const daysExpires = days? days : 15;
+  
+  const docRef = db.ref('/tokens/'+token)
+
+  // const fecha_limite = moment(fecha, 'YYYY-MM-DD').unix()
+
+
+  const nuevo_token = {
+    token : token,
+    usuario : name,
+    email: email,
+    fechaLimite : expirationDate,
+    estado : 'Pendiente'
+  }
+  // console.table(req.body)
+
+  console.table(nuevo_token)
+  
+  
+  docRef.set(nuevo_token)
+  .then((snapshot)=>{
+    res.json({
+      status: "Token generado correctamente"
+    }
+    )
+  })
+  .catch((err)=>{
+    res.json({
+      error : "erorr al crear token: "+err
+    })
+  })
+  
+
+
+})
+
+
+router.get('/validar-token/:token', (req, res)=>{
+  const {token} = req.params
+  
+
+
+
+  res.send(token)
+})
 ////////////////////////// control de imagenes //////////////////////////
 
 // redireccion a subirImagen // desuso

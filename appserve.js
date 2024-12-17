@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors')
 const jwt = require('jsonwebtoken');
 const cookierParser = require("cookie-parser")
 
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 app.use(morgan('dev')); // sirve para tener control de las peticiones
 app.use(express.json())
 app.use(cookierParser())
+app.use(cors())
 
 app.use(express.urlencoded({
     extended: true,
