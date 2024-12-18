@@ -1,14 +1,14 @@
 const { Router } = require("express");
 const { db, storage, bucket, admin } = require("./firebase.config");
-const { UserRepository} = require('./UserRepository')
+const { UserRepository } = require("./UserRepository");
 const multer = require("multer");
 const moment = require("moment");
 
 const path = require("path");
+const { error } = require("console");
 
 const router = Router(); // router de Express
 const upload = multer({}); // sirve para recibir archivos
-
 
 ////////////////////////// ACCIONES CON REDENDERIZADO  //////////////////////////
 
@@ -120,7 +120,7 @@ router.post("/api/nuevoProducto", upload.single("imagen"), async (req, res) => {
     await fileBucket.save(file.buffer);
   } catch (err) {
     res.json({
-      status: "ERROR al subir imagenes",
+      error: "ERROR al subir imagenes",
     });
   }
 
@@ -132,17 +132,16 @@ router.post("/api/nuevoProducto", upload.single("imagen"), async (req, res) => {
     });
 
     nuevoProducto = {
-      nombre: req.body.nombre,
-      descripcion: req.body.descripcion,
-      descripcionCorta: req.body.descripcionCorta,
-      categorias: req.body.categorias,
+      description: req.body.description,
+      moldingNumber: req.body.moldingNumber,
+      category: req.body.category,
       imagen: direccion,
     };
 
     await db.ref("productos").push(nuevoProducto);
 
     res.json({
-      status: "producto agregado",
+      ok: "producto agregado",
     });
   } catch (error) {
     console.error("Error al obtener la URL de imagen:", error);
@@ -152,7 +151,7 @@ router.post("/api/nuevoProducto", upload.single("imagen"), async (req, res) => {
   try {
   } catch (err) {
     res.json({
-      status: "ERROR al subir datos",
+      error: "ERROR al subir datos",
     });
   }
 });
@@ -201,22 +200,20 @@ router.delete("/api/producto/:id", (req, res) => {
       .delete()
       .then(() => {
         console.log("Imagen eliminada correctamente");
-        
-          
       })
-      .then(()=>{
+      .then(() => {
         productosRef
-        .remove()
-        .then(() => {
-          res.json({
-            status: `${idProducto} eliminado correctamente`,
+          .remove()
+          .then(() => {
+            res.json({
+              ok: `${idProducto} eliminado correctamente`,
+            });
+          })
+          .catch(() => {
+            res.json({
+              error: "Error al intentar eliminar producto",
+            });
           });
-        })
-        .catch(() => {
-          res.json({
-            status: "Error al intentar eliminar producto",
-          });
-        });
       })
       .catch((error) => {
         console.error("Error al eliminar la imagen:", error);
@@ -239,74 +236,67 @@ router.delete("/api/producto/:id", (req, res) => {
 
 ////////////////////////// LOGIN y seguridad //////////////////////////
 
-router.get('/loginscreen', (req, res)=>{
-  res.render('login')
-})
+router.get("/loginscreen", (req, res) => {
+  res.render("login");
+});
 
-router.get('/validar',(req, res)=>{
-  if(req.cookies.access_token){
-    res.send('Sesion iniciada como '+ req.cookies.access_token)
-  } else{
-    res.send('Acceso denegado')
-
+router.get("/validar", (req, res) => {
+  if (req.cookies.access_token) {
+    res.send("Sesion iniciada como " + req.cookies.access_token);
+  } else {
+    res.send("Acceso denegado");
   }
-})
+});
 
 router.post("/registrer", (req, res) => {
   // console.table(req.body);
-  const {user, email, password} = req.body
+  const { user, email, password } = req.body;
 
   try {
-    const respuesta = UserRepository.create({user, email, password})
-    console.log("UID:"+respuesta)
+    const respuesta = UserRepository.create({ user, email, password });
+    console.log("UID:" + respuesta);
     res.json({
-      status: "usuario agregado correctamente"
-    }) 
+      ok: "usuario agregado correctamente",
+    });
   } catch (error) {
     res.json({
-      error: "Error al crear usuario"
-    })
+      error: "Error al crear usuario",
+    });
   }
-
-  
 });
 
 router.post("/login", async (req, res) => {
   // console.table(req.body);
-  const {email, password} = req.body
+  const { email, password } = req.body;
 
- 
-
-
-  res.cookie('access_token', email, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 1000 * 60 * 60 * 2
-  })
-  .json({
-    status: 'sesion iniciada como: '+ email
-  })
-
- 
+  res
+    .cookie("access_token", email, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 2,
+    })
+    .json({
+      ok: "sesion iniciada como: " + email,
+    });
 });
 
-router.get("/users", async (req, res )=>{
-  var usuarios = {}
+router.get("/users", async (req, res) => {
+  var usuarios = {};
   // const user_list = await UserRepository.all()
-  const auth = admin.auth()
+  const auth = admin.auth();
 
-  const listUsersResult = await auth.listUsers()
+  const listUsersResult = await auth.listUsers();
   // console.log(listUsersResult);
   // console.log("Lista usuarios: ");
-  
+
   // console.log(user_list);
-  
-  for (const user in listUsersResult.users){
+
+  for (const user in listUsersResult.users) {
     // console.log(listUsersResult.users[user]);
 
-    const {uid, email, displayName,} = listUsersResult.users[user]
-    const fechaCreacion = listUsersResult.users[user].metadata.creationTime
+    const { uid, email, displayName } = listUsersResult.users[user];
+    const fechaCreacion = listUsersResult.users[user].metadata.creationTime;
 
     // console.log({
     //   uid: uid,
@@ -319,86 +309,156 @@ router.get("/users", async (req, res )=>{
       uid: uid,
       email: email,
       user: displayName,
-      creacion: fechaCreacion
-
-    }
+      creacion: fechaCreacion,
+    };
   }
-  
+
   // console.log(usuarios);
-  
+
   // res.send("RecibidoJSON1")
-  res.json(usuarios)
+  res.json(usuarios);
+});
 
-})
+router.delete("/users/:id", (req, res) => {
+  const ID = req.params.id;
 
-router.delete("/users/:id", (req, res)=>{
-  const ID = req.params.id
-
-  const auth = admin.auth()
-  auth.deleteUser(ID)
-  .then(()=>{
-    res.json({
-      status: "Usuario eliminado correctamente"
+  const auth = admin.auth();
+  auth
+    .deleteUser(ID)
+    .then(() => {
+      res.json({
+        ok: "Usuario eliminado correctamente",
+      });
     })
-  })
-  .catch((err)=>{
-    res.json({
-      error: "Error al eliminar "+err
-    })
-  })
+    .catch((err) => {
+      res.json({
+        error: "Error al eliminar " + err,
+      });
+    });
 
   // res.status('Recibido')
-})
+});
 
 ////////////////////////////// control de token //////////////////////////////////
-router.post('/nuevo-token', async (req, res)=>{
-  const {token, name, email, expirationDate} = req.body
-
+router.post("/nuevo-token", async (req, res) => {
+  const { token, name, email, expirationDate } = req.body;
 
   // const daysExpires = days? days : 15;
-  
-  const docRef = db.ref('/tokens/'+token)
+
+  const docRef = db.ref("/tokens/" + token);
 
   // const fecha_limite = moment(fecha, 'YYYY-MM-DD').unix()
 
-
   const nuevo_token = {
-    token : token,
-    usuario : name,
+    token: token,
+    usuario: name,
     email: email,
-    fechaLimite : expirationDate,
-    estado : 'Pendiente'
-  }
+    fechaLimite: expirationDate,
+    estado: "Pendiente",
+  };
   // console.table(req.body)
 
-  console.table(nuevo_token)
-  
-  
-  docRef.set(nuevo_token)
-  .then((snapshot)=>{
-    res.json({
-      status: "Token generado correctamente"
-    }
-    )
-  })
-  .catch((err)=>{
-    res.json({
-      error : "erorr al crear token: "+err
+  console.table(nuevo_token);
+
+  docRef
+    .set(nuevo_token)
+    .then((snapshot) => {
+      res.json({
+        ok: "Token generado correctamente",
+      });
     })
-  })
-  
+    .catch((err) => {
+      res.json({
+        error: "erorr al crear token: " + err,
+      });
+    });
+});
 
+router.get("/tokens", (req, res) => {
+  const productosRef = db.ref("tokens");
 
-})
+  productosRef
+    .once("value", (snapshot) => {
+      const productos = snapshot.val();
+      console.log(productos);
+      res.json(productos);
+    })
+    .catch((err) => {
+      console.error("Error al obtener datos:", err);
+    });
+});
 
+router.get("/login-token/:token", (req, res) => {
+  const { token } = req.params;
+  const tokenRef = db.ref("tokens/" + token);
 
-router.get('/validar-token/:token', (req, res)=>{
+  tokenRef
+    .once("value", (snapshot) => {
+      if (snapshot.val()) {
+        const token = snapshot.val();
+        // console.log(token);
+
+        const fechaExpires = moment(token.fechaLimite, "YYYY-MM-DD")
+          .add(1, "days")
+          .unix();
+        const now = moment().unix();
+
+        
+        if (now < fechaExpires) {
+          res
+            .cookie(
+              "accessToken",
+              { token: token.token },
+              {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                maxAge: 1000 * 60 * 2,
+              }
+            )
+            .json({
+              ok: "token valido",
+            });
+        } else {
+          res.json({
+            status: "token vencido",
+          });
+        }
+      } else {
+        res.json({
+          error: "Token no valido",
+        });
+      }
+    })
+    .catch((err) => {
+      res.json({
+        error: "Token no valido",
+      });
+    });
+
+  // res.send(token)
+});
+
+router.get("/validar-acceso", (req, res) => {
+  if (req.cookies.accessToken) {
+    res.json({ok : "Sesion iniciada como " + req.cookies.accessToken.token});
+  } else {
+    res.send({error:"Acceso denegado"});
+  }
+});
+
+router.delete('/tokens/:token', (req, res)=>{
   const {token} = req.params
-  
+  const productosRef = db.ref("tokens/" + token);
 
+  productosRef.remove()
+  .then(()=>{
+    res.json({ok: 'token eliminado correctamente'})
+  })
+  .catch(()=>{
+    res.json({error: 'error al eliminar token'})
+  })
 
-
-  res.send(token)
 })
 ////////////////////////// control de imagenes //////////////////////////
 
