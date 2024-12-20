@@ -40,6 +40,10 @@ router.get("/productos", (req, res) => {
     });
 });
 
+router.get('*',(req, res)=>{
+  res.render('/')
+})
+
 // entrega un producto en especifico (rederizado por hbs)
 router.get("/producto/:id", async (req, res) => {
   const idProducto = req.params.id;
@@ -97,6 +101,48 @@ router.get("/api", async (req, res) => {
     });
 });
 
+router.get("/api2", async (req, res) => {
+  const productosRef = db.ref("productos");
+  var arregloProductos = []
+
+  productosRef
+    .once("value", async (snapshot) => {
+      const productos = snapshot.val();
+      console.log(productos);
+
+
+      for (const producto in productos) {
+        let strImagen = productos[producto].imagen;
+
+        const file = bucket.file(strImagen);
+        const dateExpires = moment().add(1, "days").unix() * 1000;
+        const [url] = await file.getSignedUrl({
+          action: "read",
+          expires: dateExpires, // Fecha de caducidad de la URL
+        });
+        productos[producto].imagen = url;
+
+
+        arregloProductos.push({
+          id : producto,
+          image : url,
+          type: productos[producto].category,
+          number : productos[producto].moldingNumber,
+          descriptionEn: productos[producto].description
+
+        })
+
+      }
+
+      console.log(arregloProductos)
+      
+      res.json({arreglo: arregloProductos});
+    })
+    .catch((err) => {
+      console.error("Error al obtener datos:", err);
+    });
+});
+
 // agrega un producto nuevo a la base de datos
 /* recibe JSON
  {nombre: text,
@@ -111,7 +157,10 @@ router.get("/api", async (req, res) => {
  */
 router.post("/api/nuevoProducto", upload.single("imagen"), async (req, res) => {
   const file = req.file;
-  const direccion = "productos/" + file.originalname;
+  const {moldingNumber} = req.body
+  const extensionImagen = file.originalname.split('.')[1] // pruducto. jpeg
+  const direccion = "productos/" + moldingNumber + "."+ extensionImagen;
+
 
   // Subir el archivo a Firebase
 
@@ -137,6 +186,8 @@ router.post("/api/nuevoProducto", upload.single("imagen"), async (req, res) => {
       category: req.body.category,
       imagen: direccion,
     };
+  //  console.table(nuevoProducto)
+
 
     await db.ref("productos").push(nuevoProducto);
 
