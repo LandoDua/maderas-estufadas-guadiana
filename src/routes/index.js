@@ -40,9 +40,7 @@ router.get("/productos", (req, res) => {
     });
 });
 
-router.get('*',(req, res)=>{
-  res.render('/')
-})
+
 
 // entrega un producto en especifico (rederizado por hbs)
 router.get("/producto/:id", async (req, res) => {
@@ -108,7 +106,7 @@ router.get("/api2", async (req, res) => {
   productosRef
     .once("value", async (snapshot) => {
       const productos = snapshot.val();
-      console.log(productos);
+      // console.log(productos);
 
 
       for (const producto in productos) {
@@ -134,7 +132,7 @@ router.get("/api2", async (req, res) => {
 
       }
 
-      console.log(arregloProductos)
+      // console.log(arregloProductos)
       
       res.json({arreglo: arregloProductos});
     })
@@ -510,6 +508,28 @@ router.delete('/tokens/:token', (req, res)=>{
     res.json({error: 'error al eliminar token'})
   })
 
+})
+
+router.put('/token-change/:token', (req, res) =>{
+  const nuevoEstado = req.body.estado? req.body.estado : 'Pendiente';
+  console.log(nuevoEstado);
+  
+  const { token } = req.params;
+  const tokenRef = db.ref("tokens/" + token);
+
+  tokenRef.update({
+    estado: nuevoEstado
+  })
+  .then(()=>{
+    res.json({
+      ok: 'Estado cambiado a: '+ nuevoEstado
+    })
+  })
+  .catch(()=>{
+    res.json({
+      err: 'Error al cambiar estado del token'
+    })
+  })
 })
 ////////////////////////// control de imagenes //////////////////////////
 
