@@ -437,6 +437,39 @@ router.get("/tokens", (req, res) => {
     });
 });
 
+router.get("/tokens2", (req, res)=>{
+  const productosRef = db.ref("tokens");
+
+  let listaTokens = []
+
+  productosRef
+    .once("value", (snapshot) => {
+      const tokens = snapshot.val();
+      // console.log(tokens);
+      
+      
+      for(const token in tokens){
+        listaTokens.push({
+          id : token,
+          name: tokens[token].usuario,
+          status: tokens[token].estado,
+          token: tokens[token].token,
+          date: tokens[token].fechaLimite,
+          email: tokens[token].email
+
+        })
+        
+
+      }
+
+    res.json({tokens: listaTokens})
+
+    })
+    .catch((err) => {
+      console.error("Error al obtener datos:", err);
+    });
+})
+
 router.get("/login-token/:token", (req, res) => {
   const { token } = req.params;
   const tokenRef = db.ref("tokens/" + token);
@@ -511,10 +544,12 @@ router.delete('/tokens/:token', (req, res)=>{
 })
 
 router.put('/token-change/:token', (req, res) =>{
-  const nuevoEstado = req.body.estado? req.body.estado : 'Pendiente';
+  const nuevoEstado = req.body.estado
   console.log(nuevoEstado);
   
   const { token } = req.params;
+  console.log(token);
+  
   const tokenRef = db.ref("tokens/" + token);
 
   tokenRef.update({
@@ -527,9 +562,10 @@ router.put('/token-change/:token', (req, res) =>{
   })
   .catch(()=>{
     res.json({
-      err: 'Error al cambiar estado del token'
+      error: 'Error al cambiar estado del token'
     })
   })
+  // res.json({error : 'prueba con error controlado'})
 })
 ////////////////////////// control de imagenes //////////////////////////
 
