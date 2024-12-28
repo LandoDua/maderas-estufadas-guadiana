@@ -1,8 +1,14 @@
 const admin = require("firebase-admin");
 const path = require('path')
 
+
+// console.log(JSON.parse(process.env.FIREBASE_CONFIG));
+
+
+
 // ../../maderas-yaqui-firebase.json"
-var serviceAccount = require(path.join(__dirname, '../', '../', 'maderas-yaqui-firebase.json'));
+// var serviceAccount = require(path.join(__dirname, '../', '../', 'maderas-yaqui-firebase.json'));
+var serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

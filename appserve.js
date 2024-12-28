@@ -4,6 +4,15 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken');
 const cookierParser = require("cookie-parser")
 
+require('dotenv').config({
+    path:'.env'
+})
+
+console.log("variable: ");
+
+// console.log(process.env.FIREBASE_CONFIG);
+
+
 const {DEAFULT_PORT} = require('./config.js')
 const path = require('path');
 const exphbs = require('express-handlebars');

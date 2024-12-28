@@ -99,7 +99,7 @@ router.get("/api", async (req, res) => {
     });
 });
 
-router.get("/api2", async (req, res) => {
+router.get("/api/v2", async (req, res) => {
   const productosRef = db.ref("productos");
   var arregloProductos = []
 
@@ -289,7 +289,7 @@ router.get("/loginscreen", (req, res) => {
   res.render("login");
 });
 
-router.get("/validar", (req, res) => {
+router.get("/api/validar", (req, res) => {
   if (req.cookies.access_token) {
     res.send("Sesion iniciada como " + req.cookies.access_token);
   } else {
@@ -297,7 +297,7 @@ router.get("/validar", (req, res) => {
   }
 });
 
-router.post("/registrer", (req, res) => {
+router.post("/api/registrer", (req, res) => {
   // console.table(req.body);
   const { user, email, password } = req.body;
 
@@ -314,7 +314,7 @@ router.post("/registrer", (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/api/login", async (req, res) => {
   // console.table(req.body);
   const { email, password } = req.body;
 
@@ -330,7 +330,7 @@ router.post("/login", async (req, res) => {
     });
 });
 
-router.get("/users", async (req, res) => {
+router.get("/api/users", async (req, res) => {
   var usuarios = {};
   // const user_list = await UserRepository.all()
   const auth = admin.auth();
@@ -368,7 +368,7 @@ router.get("/users", async (req, res) => {
   res.json(usuarios);
 });
 
-router.delete("/users/:id", (req, res) => {
+router.delete("/api/users/:id", (req, res) => {
   const ID = req.params.id;
 
   const auth = admin.auth();
@@ -389,7 +389,7 @@ router.delete("/users/:id", (req, res) => {
 });
 
 ////////////////////////////// control de token //////////////////////////////////
-router.post("/nuevo-token", async (req, res) => {
+router.post("/api/nuevo-token", async (req, res) => {
   const { token, name, email, expirationDate } = req.body;
 
   // const daysExpires = days? days : 15;
@@ -423,7 +423,7 @@ router.post("/nuevo-token", async (req, res) => {
     });
 });
 
-router.get("/tokens", (req, res) => {
+router.get("/api/tokens", (req, res) => {
   const productosRef = db.ref("tokens");
 
   productosRef
@@ -437,7 +437,7 @@ router.get("/tokens", (req, res) => {
     });
 });
 
-router.get("/tokens2", (req, res)=>{
+router.get("/api/tokens2", (req, res)=>{
   const productosRef = db.ref("tokens");
 
   let listaTokens = []
@@ -470,7 +470,7 @@ router.get("/tokens2", (req, res)=>{
     });
 })
 
-router.get("/login-token/:token", (req, res) => {
+router.get("/api/login-token/:token", (req, res) => {
   const { token } = req.params;
   const tokenRef = db.ref("tokens/" + token);
 
@@ -521,7 +521,7 @@ router.get("/login-token/:token", (req, res) => {
   // res.send(token)
 });
 
-router.get("/validar-acceso", (req, res) => {
+router.get("/api/validar-acceso", (req, res) => {
   if (req.cookies.accessToken) {
     res.json({ok : "Sesion iniciada como " + req.cookies.accessToken.token});
   } else {
@@ -529,7 +529,7 @@ router.get("/validar-acceso", (req, res) => {
   }
 });
 
-router.delete('/tokens/:token', (req, res)=>{
+router.delete('/api/tokens/:token', (req, res)=>{
   const {token} = req.params
   const productosRef = db.ref("tokens/" + token);
 
@@ -543,7 +543,7 @@ router.delete('/tokens/:token', (req, res)=>{
 
 })
 
-router.put('/token-change/:token', (req, res) =>{
+router.put('/api/token-change/:token', (req, res) =>{
   const nuevoEstado = req.body.estado
   console.log(nuevoEstado);
   
@@ -570,7 +570,7 @@ router.put('/token-change/:token', (req, res) =>{
 ////////////////////////// control de imagenes //////////////////////////
 
 // redireccion a subirImagen // desuso
-router.get("/subir", (req, res) => {
+router.get("/api/subir", (req, res) => {
   res.render("subirFoto");
 });
 
@@ -591,7 +591,7 @@ router.post("/api/subirImagen", upload.single("imagen"), async (req, res) => {
 });
 
 // consulta una imagen de PRODUCTOS por su nombre
-router.get("/imagen/productos/:imagen?", async (req, res) => {
+router.get("/api/imagen/productos/:imagen?", async (req, res) => {
   if (req.params.imagen) {
     try {
       const { imagen } = req.params;
