@@ -4,9 +4,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken');
 const cookierParser = require("cookie-parser")
 
-require('dotenv').config({
-    path:'.env'
-})
+require('dotenv').config()
 
 console.log("variable: ");
 
