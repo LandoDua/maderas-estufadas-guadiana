@@ -614,4 +614,9 @@ router.get("/api/imagen/productos/:imagen?", async (req, res) => {
   }
 });
 
+router.use((req, res) => {
+  res.status(404).redirect('/')
+})
+
+
 module.exports = router;
