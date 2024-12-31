@@ -41,7 +41,10 @@ app.get('/', (req, res) => {
 app.use(morgan('dev')); // sirve para tener control de las peticiones
 app.use(express.json({ limit: '50mb'}))
 app.use(cookierParser())
-app.use(cors({credentials: true}))
+app.use(cors({
+    credentials: true,
+    origin: ['http://localhost:3000', 'https://www.megnasa.com']
+}))
 
 app.use(express.urlencoded({
     extended: true,
