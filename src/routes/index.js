@@ -567,6 +567,36 @@ router.put('/api/token-change/:token', (req, res) =>{
   })
   // res.json({error : 'prueba con error controlado'})
 })
+
+////////////////////////////// login-admin //////////////////////////////////
+
+router.post('/api/login-admin', (req, res)=>{
+  const {email, password} = req.body
+  
+  const email_validation = 'user'
+  const pass_validation = '1234'
+
+
+  if(email==email_validation && password==pass_validation){
+    res.json({
+      ok: 'usuario correcto'
+    })
+  } else {
+    res.json({
+      estaus: 'usuario invalido ',
+      email,
+      password
+    })
+  }
+
+
+  
+
+})
+
+
+
+
 ////////////////////////// control de imagenes //////////////////////////
 
 // redireccion a subirImagen // desuso
