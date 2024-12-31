@@ -322,7 +322,7 @@ router.post("/api/login", async (req, res) => {
     .cookie("access_token", email, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       maxAge: 1000 * 60 * 60 * 2,
     })
     .json({
@@ -494,7 +494,7 @@ router.get("/api/login-token/:token", (req, res) => {
               {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
+                sameSite: "strict",
                 maxAge: 1000 * 60 * 2,
               }
             )
@@ -584,7 +584,7 @@ router.post('/api/login-admin', (req, res)=>{
         {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
+          sameSite: "strict",
           maxAge: 1000 * 60 * 2,
         }
       )
