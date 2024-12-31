@@ -576,22 +576,42 @@ router.post('/api/login-admin', (req, res)=>{
   const email_validation = 'user'
   const pass_validation = '1234'
 
-
-  if(email==email_validation && password==pass_validation){
+  try {
+    if(email==email_validation && password==pass_validation){
+      res.cookie(
+        "adminToken",
+        { token: 'user' },
+        {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 1000 * 60 * 2,
+        }
+      )
+      .json({
+        ok: 'usuario correcto'
+      })
+    } else {
+      res.json({
+        estaus: 'usuario invalido ',
+        email,
+        password
+      })
+    }
+  } catch (error) {
     res.json({
-      ok: 'usuario correcto'
-    })
-  } else {
-    res.json({
-      estaus: 'usuario invalido ',
-      email,
-      password
+      error: 'Error en el login de admin',
     })
   }
 
+})
 
-  
-
+router.get('/api/validar-admin', (req, res)=>{
+  if (req.cookies.adminToken) {
+    res.json({ok : "Sesion iniciada como " + req.cookies.adminToken.token});
+  } else {
+    res.send({error:"Acceso denegado"});
+  }
 })
 
 
