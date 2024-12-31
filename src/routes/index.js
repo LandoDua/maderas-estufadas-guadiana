@@ -487,8 +487,7 @@ router.get("/api/login-token/:token", (req, res) => {
 
         
         if (now < fechaExpires) {
-          res
-            .cookie(
+          res.cookie(
               "accessToken",
               { token: token.token },
               {
