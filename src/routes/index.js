@@ -500,6 +500,7 @@ router.get("/api/login-token/:token", (req, res) => {
             )
           res.json({
               ok: "token valido",
+              accesToken: token
             });
         } else {
           res.json({
@@ -521,10 +522,14 @@ router.get("/api/login-token/:token", (req, res) => {
   // res.send(token)
 });
 
-router.get("/api/validar-acceso", (req, res) => {
+router.post("/api/validar-acceso", (req, res) => {
   if (req.cookies.accessToken) {
     res.json({ok : "Sesion iniciada como " + req.cookies.accessToken.token});
-  } else {
+    return
+  } 
+  else if(req.body.accesToken){
+    res.json({ok : "Sesion iniciada como " + req.body.accesTokenn});
+  }else {
     res.send({error:"Acceso denegado"});
   }
 });
