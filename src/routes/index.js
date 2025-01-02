@@ -475,7 +475,7 @@ router.get("/api/login-token/:token", (req, res) => {
   const tokenRef = db.ref("tokens/" + token);
 
   tokenRef
-    .once("value", (snapshot) => {
+    .once("value", async (snapshot) => {
       if (snapshot.val()) {
         const token = snapshot.val();
         // console.log(token);
@@ -487,7 +487,7 @@ router.get("/api/login-token/:token", (req, res) => {
 
         
         if (now < fechaExpires) {
-          res.cookie(
+          await res.cookie(
               "accessToken",
               { token: token.token },
               {
@@ -498,7 +498,7 @@ router.get("/api/login-token/:token", (req, res) => {
                 path: '/',
               }
             )
-            .json({
+          res.json({
               ok: "token valido",
             });
         } else {

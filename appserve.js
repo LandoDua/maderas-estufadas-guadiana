@@ -43,7 +43,7 @@ app.use(express.json({ limit: '50mb'}))
 app.use(cookierParser())
 app.use(cors({
     credentials: true,
-    origin: ['http://localhost:3000', 'https://www.megnasa.com', 'https://maderas-estufadas-guadiana.onrender.com']
+    origin: ['http://localhost:3000','http://localhost:3001', 'https://www.megnasa.com', 'https://maderas-estufadas-guadiana.onrender.com']
 }))
 
 app.use(express.urlencoded({
