@@ -124,9 +124,9 @@ router.get("/api/v2", async (req, res) => {
         arregloProductos.push({
           id : producto,
           image : url,
-          type: productos[producto].category,
-          number : productos[producto].moldingNumber,
-          descriptionEn: productos[producto].description
+          category: productos[producto].category,
+          moldingNumber : productos[producto].moldingNumber,
+          description: productos[producto].description
 
         })
 
@@ -578,8 +578,8 @@ router.put('/api/token-change/:token', (req, res) =>{
 router.post('/api/login-admin', (req, res)=>{
   const {email, password} = req.body
   
-  const email_validation = 'user'
-  const pass_validation = '1234'
+  const email_validation = 'adelio@gato.com'
+  const pass_validation = 'brasil'
 
   try {
     if(email==email_validation && password==pass_validation){
@@ -595,7 +595,8 @@ router.post('/api/login-admin', (req, res)=>{
         }
       )
       .json({
-        ok: 'usuario correcto'
+        ok: 'usuario correcto',
+        adminToken: "gatonegromuynegro"
       })
     } else {
       res.json({
@@ -612,10 +613,20 @@ router.post('/api/login-admin', (req, res)=>{
 
 })
 
-router.get('/api/validar-admin', (req, res)=>{
+router.post('/api/validar-admin', (req, res)=>{
   if (req.cookies.adminToken) {
     res.json({ok : "Sesion iniciada como " + req.cookies.adminToken.token});
-  } else {
+
+  } else if(req.body.adminToken){
+
+    if(req.body.adminToken == 'gatonegromuynegro'){
+       res.json({ok : "Sesion iniciada como ADMIN"});
+
+    } else{
+      res.send({error:"Acceso denegado"});
+    }
+
+  }else {
     res.send({error:"Acceso denegado"});
   }
 })
