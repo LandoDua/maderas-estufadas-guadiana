@@ -500,7 +500,7 @@ router.get("/api/login-token/:token", (req, res) => {
             )
           res.json({
               ok: "token valido",
-              accesToken: token
+              accesToken: "gatoblancomuyblanco"
             });
         } else {
           res.json({
@@ -528,7 +528,12 @@ router.post("/api/validar-acceso", (req, res) => {
     return
   } 
   else if(req.body.accesToken){
-    res.json({ok : "Sesion iniciada como " + req.body.accesTokenn});
+    if(req.body.accesToken == 'gatoblancomuyblanco'){
+      res.json({ok : "Sesion iniciada como ADMIN"});
+
+    } else{
+      res.send({error:"Acceso denegado"});
+    }
   }else {
     res.send({error:"Acceso denegado"});
   }
