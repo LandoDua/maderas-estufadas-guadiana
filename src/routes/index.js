@@ -125,8 +125,11 @@ router.get("/api/v2", async (req, res) => {
           id : producto,
           image : url,
           category: productos[producto].category,
+          type: productos[producto].category,
           moldingNumber : productos[producto].moldingNumber,
-          description: productos[producto].description
+          number : productos[producto].moldingNumber,
+          description: productos[producto].description,
+          descriptionEn: productos[producto].description,
 
         })
 
