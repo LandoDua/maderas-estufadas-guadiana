@@ -529,11 +529,12 @@ router.get("/api/login-token/:token", (req, res) => {
 router.post("/api/validar-acceso", (req, res) => {
   // console.log(req.body);
   
-  if (req.cookies.accessToken) {
-    res.json({ok : "Sesion iniciada como " + req.cookies.accessToken.token});
-    return
-  } 
-  else if(req.body.accesToken){
+  // if (req.cookies.accessToken) {
+  //   res.json({ok : "Sesion iniciada como " + req.cookies.accessToken.token});
+  //   return
+  // } 
+  // else 
+  if(req.body.accesToken){
     try {
         var data = {}
       
@@ -646,10 +647,11 @@ router.post('/api/login-admin', (req, res)=>{
 })
 
 router.post('/api/validar-admin', (req, res)=>{
-  if (req.cookies.adminToken) {
-    res.json({ok : "Sesion iniciada como " + req.cookies.adminToken.token});
+  // if (req.cookies.adminToken) {
+  //   res.json({ok : "Sesion iniciada como " + req.cookies.adminToken.token});
 
-  } else if(req.body.adminToken){
+  // } else 
+  if(req.body.adminToken){
 
     try {
 
@@ -690,7 +692,7 @@ router.post("/api/subirImagen", upload.single("imagen"), async (req, res) => {
 
   console.log(req.file);
   const file = req.file;
-
+vali
   // Subir el archivo a Firebase
   const fileBucket = bucket.file("productos/" + file.originalname);
   await fileBucket.save(file.buffer);
