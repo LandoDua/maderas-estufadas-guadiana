@@ -322,7 +322,7 @@ router.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
 
   res
-    .cookie("access_token", email, {
+    .cookie("_access_token", email, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
@@ -627,7 +627,7 @@ router.post('/api/login-admin', (req, res)=>{
       )
 
       res.cookie(
-        "adminToken",
+        "_adminToken",
         { token: 'ADMIN' },
         {
           httpOnly: true,
