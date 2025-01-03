@@ -19,7 +19,7 @@ router.get("/productos", (req, res) => {
   productosRef
     .once("value", async (snapshot) => {
       const productos = snapshot.val();
-      console.log(productos);
+      // console.log(productos);
 
       for (const producto in productos) {
         let strImagen = productos[producto].imagen;
@@ -50,7 +50,7 @@ router.get("/producto/:id", async (req, res) => {
   productosRef
     .once("value", async (snapshot) => {
       const producto = snapshot.val();
-      console.log(producto);
+      // console.log(producto);
 
       let strImagen = producto.imagen;
 
@@ -78,7 +78,7 @@ router.get("/api", async (req, res) => {
   productosRef
     .once("value", async (snapshot) => {
       const productos = snapshot.val();
-      console.log(productos);
+      // console.log(productos);
 
       for (const producto in productos) {
         let strImagen = productos[producto].imagen;
@@ -216,7 +216,7 @@ router.get("/api/producto/:id", async (req, res) => {
   productosRef
     .once("value", async (snapshot) => {
       const producto = snapshot.val();
-      console.log(producto);
+      // console.log(producto);
 
       let strImagen = producto.imagen;
 
@@ -306,7 +306,7 @@ router.post("/api/registrer", (req, res) => {
 
   try {
     const respuesta = UserRepository.create({ user, email, password });
-    console.log("UID:" + respuesta);
+    // console.log("UID:" + respuesta);
     res.json({
       ok: "usuario agregado correctamente",
     });
@@ -339,10 +339,6 @@ router.get("/api/users", async (req, res) => {
   const auth = admin.auth();
 
   const listUsersResult = await auth.listUsers();
-  // console.log(listUsersResult);
-  // console.log("Lista usuarios: ");
-
-  // console.log(user_list);
 
   for (const user in listUsersResult.users) {
     // console.log(listUsersResult.users[user]);
@@ -350,13 +346,7 @@ router.get("/api/users", async (req, res) => {
     const { uid, email, displayName } = listUsersResult.users[user];
     const fechaCreacion = listUsersResult.users[user].metadata.creationTime;
 
-    // console.log({
-    //   uid: uid,
-    //   email: email,
-    //   user: displayName,
-    //   creacion: fechaCreacion
-
-    // })
+    
     usuarios[uid] = {
       uid: uid,
       email: email,
@@ -365,7 +355,6 @@ router.get("/api/users", async (req, res) => {
     };
   }
 
-  // console.log(usuarios);
 
   // res.send("RecibidoJSON1")
   res.json(usuarios);
@@ -432,7 +421,7 @@ router.get("/api/tokens", (req, res) => {
   productosRef
     .once("value", (snapshot) => {
       const productos = snapshot.val();
-      console.log(productos);
+
       res.json(productos);
     })
     .catch((err) => {
@@ -538,7 +527,7 @@ router.get("/api/login-token/:token", (req, res) => {
 });
 
 router.post("/api/validar-acceso", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   
   if (req.cookies.accessToken) {
     res.json({ok : "Sesion iniciada como " + req.cookies.accessToken.token});
@@ -581,10 +570,10 @@ router.delete('/api/tokens/:token', (req, res)=>{
 
 router.put('/api/token-change/:token', (req, res) =>{
   const nuevoEstado = req.body.estado
-  console.log(nuevoEstado);
+  // console.log(nuevoEstado);
   
   const { token } = req.params;
-  console.log(token);
+  // console.log(token);
   
   const tokenRef = db.ref("tokens/" + token);
 
