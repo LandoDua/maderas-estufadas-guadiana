@@ -586,8 +586,8 @@ router.put('/api/token-change/:token', (req, res) =>{
 router.post('/api/login-admin', (req, res)=>{
   const {email, password} = req.body
   
-  const email_validation = 'adelio@gato.com'
-  const pass_validation = 'brasil'
+  const email_validation = process.env.EMAIL_LOCAL
+  const pass_validation = process.env.PASSWORD_LOCAL
 
   try {
     if(email==email_validation && password==pass_validation){
