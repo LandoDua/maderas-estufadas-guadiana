@@ -3,9 +3,9 @@ const { db, storage, bucket, admin } = require("./firebase.config");
 const { UserRepository } = require("./UserRepository");
 const multer = require("multer");
 const moment = require("moment");
+const jwt = require('jsonwebtoken')
 
 const path = require("path");
-const { error } = require("console");
 
 const router = Router(); // router de Express
 const upload = multer({}); // sirve para recibir archivos
@@ -490,6 +490,18 @@ router.get("/api/login-token/:token", (req, res) => {
 
         
         if (now < fechaExpires) {
+
+          const token_secreto = jwt.sign(
+            {
+              palabra: 'gatonegromuynegro',
+              expires: moment().add(20, 'minutes').unix(),
+            },
+            process.env.SECRET_JKT_KEY,
+            {
+              expiresIn: '1h'
+            }
+          )
+
           await res.cookie(
               "accessToken",
               { token: token.token },
@@ -503,7 +515,7 @@ router.get("/api/login-token/:token", (req, res) => {
             )
           res.json({
               ok: "token valido",
-              accesToken: "gatoblancomuyblanco"
+              accesToken: token_secreto
             });
         } else {
           res.json({
@@ -526,19 +538,30 @@ router.get("/api/login-token/:token", (req, res) => {
 });
 
 router.post("/api/validar-acceso", (req, res) => {
+  console.log(req.body);
+  
   if (req.cookies.accessToken) {
     res.json({ok : "Sesion iniciada como " + req.cookies.accessToken.token});
     return
   } 
   else if(req.body.accesToken){
-    if(req.body.accesToken == 'gatoblancomuyblanco'){
-      res.json({ok : "Sesion iniciada como ADMIN"});
+    try {
+        var data = {}
+      
+      data = jwt.verify(req.body.accesToken, process.env.SECRET_JKT_KEY)
+    
+      
+      if(data.expires && data.expires > moment().unix()){
+        res.json({ok : "Sesion iniciada con token"});
 
     } else{
-      res.send({error:"Acceso denegado"});
+      res.send({error:"Acceso denegado2"});
+    }
+    } catch (error) {
+      res.send({error:"Acceso denegado3"});
     }
   }else {
-    res.send({error:"Acceso denegado"});
+    res.send({error:"Acceso denegado1"});
   }
 });
 
@@ -591,6 +614,18 @@ router.post('/api/login-admin', (req, res)=>{
 
   try {
     if(email==email_validation && password==pass_validation){
+
+      const token_secreto = jwt.sign(
+        {
+          palabra: 'gatonegromuynegro',
+          expires: moment().add(59, 'minutes').unix(),
+        },
+        process.env.SECRET_JKT_KEY,
+        {
+          expiresIn: '1h'
+        }
+      )
+
       res.cookie(
         "adminToken",
         { token: 'ADMIN' },
@@ -604,7 +639,7 @@ router.post('/api/login-admin', (req, res)=>{
       )
       .json({
         ok: 'usuario correcto',
-        adminToken: "gatonegromuynegro"
+        adminToken: token_secreto
       })
     } else {
       res.json({
@@ -627,10 +662,19 @@ router.post('/api/validar-admin', (req, res)=>{
 
   } else if(req.body.adminToken){
 
-    if(req.body.adminToken == 'gatonegromuynegro'){
-       res.json({ok : "Sesion iniciada como ADMIN"});
+    try {
 
-    } else{
+      var data = {}
+      
+      data = jwt.verify(req.body.adminToken, process.env.SECRET_JKT_KEY)
+
+      if(data.expires && data.expires > moment().unix()){
+        res.json({ok : "Sesion iniciada como ADMIN"});
+ 
+     } else{
+       res.send({error:"Acceso denegado"});
+     }
+    } catch (error) {
       res.send({error:"Acceso denegado"});
     }
 
